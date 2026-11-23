@@ -269,7 +269,8 @@
         const resPix = await fetch('/api/criar-pix', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ conviteId: data.id, valor:  document getElementById 'valor'—})
+          body: JSON.stringify({ conviteId: data.id, valor: document.getElementById('valor').value-
+
         });
         const pixData = await resPix.json();
         exibirTelaPix(data.id, pixData);
