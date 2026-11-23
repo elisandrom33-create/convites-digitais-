@@ -1,337 +1,764 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Convite Digital Interativo</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f3ec">
+  <meta name="description" content="Evermoment — convites digitais elegantes para todos os momentos especiais.">
+  <title>Evermoment | Convites digitais para todos os momentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-serif-title { font-family: 'Playfair Display', serif; }
+    :root {
+      --paper:#f7f3ec; --paper-2:#fffdf9; --ink:#28251f; --muted:#777168;
+      --gold:#b59a68; --gold-dark:#92794e; --line:#e7dfd2; --dark:#302b24;
+      --white:#fff; --shadow:0 18px 55px rgba(55,45,30,.09);
+      --serif:"Playfair Display", Georgia, serif; --sans:"DM Sans", Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    a{color:inherit;text-decoration:none}
+    .wrap{width:min(1160px,calc(100% - 40px));margin:auto}
+    .announcement{background:var(--dark);color:#f7f1e7;text-align:center;padding:9px 15px;font-size:11px;letter-spacing:.17em;text-transform:uppercase}
+    header{position:sticky;top:0;z-index:20;background:rgba(247,243,236,.94);backdrop-filter:blur(14px);border-bottom:1px solid rgba(181,154,104,.2)}
+    .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:11px}
+    .brand-mark{width:36px;height:36px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold-dark);font:20px var(--serif)}
+    .brand-name{font:600 22px var(--serif);letter-spacing:.09em}
+    .brand-sub{display:block;color:var(--muted);font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-top:-3px}
+    .nav-links{display:flex;align-items:center;gap:30px;font-size:12px;color:#5d574e}
+    .nav-links a:hover{color:var(--gold-dark)}
+    .btn{border:0;border-radius:3px;padding:13px 21px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+    .btn-primary{background:var(--dark);color:white}
+    .btn-primary:hover{background:var(--gold-dark);transform:translateY(-1px)}
+    .btn-outline{background:transparent;border:1px solid var(--gold);color:var(--dark)}
+    .btn-outline:hover{background:#eee5d6}
+    .hero{padding:76px 0 68px;position:relative;overflow:hidden}
+    .hero:before,.hero:after{content:"";position:absolute;border:1px solid rgba(181,154,104,.22);border-radius:50%;pointer-events:none}
+    .hero:before{width:440px;height:440px;right:-140px;top:-150px}
+    .hero:after{width:310px;height:310px;right:-75px;top:-85px}
+    .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:65px}
+    .eyebrow{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-dark);font-weight:700}
+    h1,h2,h3,p{margin-top:0}
+    h1{font:500 clamp(42px,6vw,72px)/1.08 var(--serif);letter-spacing:-.035em;margin:17px 0 20px;max-width:620px}
+    h1 em{color:var(--gold-dark);font-weight:400}
+    .hero-copy{max-width:480px;color:var(--muted);font-size:15px;line-height:1.85;margin-bottom:29px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .hero-note{font-size:10px;color:#8b8377;margin-top:19px;letter-spacing:.05em}
+    .hero-art{min-height:390px;display:grid;place-items:center;position:relative}
+    .hero-orbit{width:min(100%,390px);aspect-ratio:1;border:1px solid #d8c9ad;border-radius:50%;display:grid;place-items:center;position:relative}
+    .hero-orbit:before{content:"";position:absolute;inset:18px;border:1px solid #e5d9c5;border-radius:50%}
+    .hero-invite{width:235px;min-height:310px;background:#fffdf8;box-shadow:var(--shadow);border:1px solid #e6dccb;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;position:relative;transform:rotate(3deg)}
+    .hero-invite:before{content:"";position:absolute;inset:9px;border:1px solid #d8c39b;pointer-events:none}
+    .invite-small{font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-dark)}
+    .invite-script{font:italic 39px var(--serif);color:#8f7956;line-height:1.15;margin:14px 0}
+    .invite-rule{width:44px;height:1px;background:var(--gold);margin:8px auto}
+    .invite-detail{font:11px var(--serif);letter-spacing:.1em;color:#6e6558}
+    .orbit-caption{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#8d806c}
+    .section{padding:76px 0}
+    .section-head{text-align:center;max-width:650px;margin:0 auto 36px}
+    .section-head h2{font:500 clamp(32px,4vw,46px) var(--serif);margin:12px 0}
+    .section-head p{color:var(--muted);font-size:14px}
+    .category-row{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 auto 32px}
+    .filter{border:1px solid var(--line);background:transparent;color:#655e54;padding:9px 15px;border-radius:30px;font-size:11px;transition:.2s}
+    .filter.active,.filter:hover{background:var(--dark);border-color:var(--dark);color:white}
+    .catalog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:25px}
+    .product-card{background:var(--paper-2);border:1px solid var(--line);transition:.25s;overflow:hidden}
+    .product-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+    .card-visual{height:310px;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden;background:#eee8dc}
+    .card-visual:after{content:"";position:absolute;width:250px;height:250px;border:1px solid rgba(160,133,88,.22);border-radius:50%}
+    .mini-invite{width:185px;height:245px;z-index:1;position:relative;box-shadow:0 12px 28px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:22px;background:#fffdf8;border:1px solid rgba(166,140,96,.45);color:#544a3d}
+    .mini-invite:before{content:"";position:absolute;inset:8px;border:1px solid currentColor;opacity:.28}
+    .mini-top{font-size:7px;letter-spacing:.2em;text-transform:uppercase}
+    .mini-title{font:27px/1.05 var(--serif);margin:13px 0 9px}
+    .mini-line{width:35px;height:1px;background:currentColor;margin:6px auto;opacity:.6}
+    .mini-bottom{font:9px var(--serif);letter-spacing:.08em;line-height:1.6;margin-top:8px}
+
+    /* Temas Visuais */
+    .theme-blush{background:#eadbd4}
+    .theme-sage{background:#dfe3d8}
+    .theme-night{background:#343b3b}
+    .theme-night .mini-invite, .invite-card.theme-night{background:#303735;color:#e9d8b4;border-color:#bba77e}
+    .theme-rose{background:#ead7da}
+    .theme-blue{background:#dce5eb}
+    .theme-lilac{background:#e5dfeb}
+    .theme-sun{background:#eee2c9}
+    .theme-terracotta{background:#e5d2c5}
+    .theme-black{background:#dedbd4}
+    .theme-black .mini-invite, .invite-card.theme-black{background:#292826;color:#e6d7bb;border-color:#bca77e}
+
+    .card-content{padding:19px 20px 21px}
+    .card-meta{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--gold-dark);font-weight:700}
+    .card-content h3{font:500 22px var(--serif);margin:7px 0 5px}
+    .card-content p{font-size:12px;color:var(--muted);margin:0 0 16px;min-height:36px}
+    .card-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .model-code{font-size:10px;color:#918879;letter-spacing:.08em}
+    .choose{background:transparent;border:0;color:var(--gold-dark);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:8px 0;border-bottom:1px solid var(--gold)}
+    .choose:hover{color:var(--ink)}
+    .empty{grid-column:1/-1;text-align:center;padding:50px;color:var(--muted)}
+    .how{background:#eee8dc}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:40px}
+    .step{text-align:center;padding:10px 20px}
+    .step-num{width:42px;height:42px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;font:18px var(--serif);color:var(--gold-dark)}
+    .step h3{font:21px var(--serif);margin-bottom:8px}
+    .step p{font-size:12px;color:var(--muted);max-width:250px;margin:auto}
+    .cta{background:var(--dark);color:#f8f3e9;text-align:center;padding:66px 20px}
+    .cta h2{font:500 clamp(30px,4vw,44px) var(--serif);margin:12px 0}
+    .cta p{color:#c9c0b2;font-size:13px;margin-bottom:24px}
+    .cta .btn{background:#d4bd91;color:#2d281f}
+    footer{padding:27px 0;color:#847b6e;font-size:10px}
+    .footer-inner{display:flex;justify-content:space-between;gap:20px;align-items:center}
+    .footer-brand{font:18px var(--serif);letter-spacing:.1em;color:var(--ink)}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(30,27,23,.62);z-index:50;display:none;align-items:center;justify-content:center;padding:18px}
+    .modal-backdrop.open{display:flex}
+    .modal{width:min(580px,100%);max-height:92vh;overflow:auto;background:var(--paper-2);padding:30px;position:relative;box-shadow:0 25px 80px rgba(0,0,0,.25)}
+    .modal-close{position:absolute;right:17px;top:14px;border:0;background:transparent;font-size:25px;color:#766d60;z-index:5}
+    .modal h2{font:32px var(--serif);margin:7px 0}
+    .modal-intro{font-size:12px;color:var(--muted);margin-bottom:20px}
+    .selected-preview{display:flex;align-items:center;gap:15px;padding:12px;background:#f0ebe2;margin-bottom:20px}
+    .selected-swatch{width:58px;height:70px;display:grid;place-items:center;background:#e5d8c3;color:#796548;font:italic 20px var(--serif);border:1px solid #cdbb9b}
+    .selected-preview strong{font:18px var(--serif);display:block}
+    .selected-preview span{font-size:10px;color:var(--muted)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field.full{grid-column:1/-1}
+    .field label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#71685c;font-weight:700}
+    .field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--line);background:white;color:var(--ink);outline:none;border-radius:0;font-size:13px}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+    .field textarea{min-height:70px;resize:vertical}
+    .form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;flex-wrap:wrap}
+    .notice{font-size:10px;color:#8b8377;margin-top:13px}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--dark);color:white;padding:12px 18px;font-size:12px;z-index:80;transition:.25s}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+
+    /* Estilos do Convite Público & RSVP */
+    .invite-card{padding:36px 26px;text-align:center;border:1px solid rgba(166,140,96,.55);position:relative;background:#fffdf8;color:#4c4438;box-shadow:0 14px 35px rgba(0,0,0,.08)}
+    .invite-card:before{content:"";position:absolute;inset:10px;border:1px solid currentColor;opacity:.28;pointer-events:none}
+    .host-photo{width:104px;height:104px;border-radius:50%;object-fit:cover;margin:0 auto 14px;border:2px solid var(--gold);display:block;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+    .invite-actions-bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px;position:relative;z-index:2}
+    .rsvp-box{margin-top:24px;padding:22px;background:#f4efe6;border:1px solid var(--line);text-align:left}
+    .rsvp-box h3{font:22px var(--serif);margin:0 0 6px;color:var(--ink)}
+    .rsvp-box p{font-size:12px;color:var(--muted);margin-bottom:14px}
+    .guest-list-toggle{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);text-align:center}
+    .guest-summary{display:flex;gap:12px;justify-content:center;margin:12px 0;font-size:12px}
+    .guest-pill{background:white;border:1px solid var(--line);padding:6px 12px;border-radius:20px;font-weight:600}
+    .guest-items{max-height:190px;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-top:10px;text-align:left}
+    .guest-item{background:white;padding:10px 12px;border:1px solid var(--line);font-size:12px}
+    .guest-item strong{display:block;color:var(--ink)}
+    .guest-item small{color:var(--muted);display:block;margin-top:2px}
+    .photo-preview-wrap{display:flex;align-items:center;gap:12px;margin-top:4px}
+    .photo-thumb{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);display:none}
+
+    @media(max-width:800px){.hero-grid{grid-template-columns:1fr;gap:25px}.hero{padding-top:55px}.hero-art{min-height:320px}.hero-orbit{width:310px}.catalog-grid{grid-template-columns:repeat(2,1fr)}.nav-links{gap:15px}.nav-links a:not(.nav-cta){display:none}}
+    @media(max-width:540px){.wrap{width:min(100% - 28px,1160px)}.nav{height:66px}.brand-name{font-size:19px}.nav-cta{padding:10px 12px;font-size:9px}.hero{padding:48px 0 38px}.hero-art{min-height:285px}.hero-orbit{width:270px}.hero-invite{width:190px;min-height:255px}.invite-script{font-size:32px}.section{padding:56px 0}.catalog-grid{grid-template-columns:1fr;gap:17px}.card-visual{height:285px}.steps{grid-template-columns:1fr;gap:25px}.footer-inner{flex-direction:column;text-align:center}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.modal{padding:25px 19px}.category-row{gap:7px}.filter{padding:8px 12px}}
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
-
-  <!-- TELA 1: FORMULÁRIO DE CRIAÇÃO DO CONVITE (ABRE VISÍVEL POR PADRÃO) -->
-  <div id="tela-criacao" class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
-    <div class="text-center mb-6">
-      <span class="text-xs uppercase tracking-widest text-emerald-400 font-semibold">Convite Digital Premium</span>
-      <h1 class="font-serif-title text-3xl text-white mt-1">Crie seu Convite</h1>
-      <p class="text-slate-400 text-sm mt-1">Preencha os dados e libere o link interativo via Pix.</p>
-    </div>
-
-    <form id="form-convite" class="space-y-4">
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Tipo de Evento</label>
-        <select id="tipo" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500">
-          <option value="Aniversário">🎂 Aniversário</option>
-          <option value="Casamento">💍 Casamento</option>
-          <option value="Chá de Bebê">🍼 Chá de Bebê</option>
-          <option value="Formatura">🎓 Formatura</option>
-          <option value="Confraternização">🥂 Confraternização</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Nome do(s) Anfitrião(ões)</label>
-        <input type="text" id="anfitriao" required placeholder="Ex: Sofia & Isabelle / João Silva"
-          class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500" />
-      </div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Data</label>
-          <input type="date" id="data" required
-            class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500" />
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Horário</label>
-          <input type="time" id="hora" required
-            class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500" />
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Local / Endereço</label>
-        <input type="text" id="local" required placeholder="Ex: Salão de Festas Atrium, Rua..."
-          class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500" />
-      </div>
-
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Mensagem Especial</label>
-        <textarea id="mensagem" rows="2" placeholder="Sua presença tornará este dia ainda mais especial!"
-          class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500"></textarea>
-      </div>
-
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">Seu WhatsApp (com DDD)</label>
-        <input type="tel" id="whatsapp" required placeholder="Ex: 54999999999"
-          class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500" />
-      </div>
-
-      <button type="submit" id="btn-gerar"
-        class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-500/20">
-        Gerar Convite e Ir para Pix (R$ 0,10)
-      </button>
-    </form>
-  </div>
-
-  <!-- TELA 2: PAGAMENTO PIX -->
-  <div id="tela-pix" class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl text-center hidden">
-    <span class="inline-block bg-amber-500/10 text-amber-400 text-xs font-semibold px-3 py-1 rounded-full mb-3">
-      Aguardando Pagamento
-    </span>
-    <h2 class="font-serif-title text-2xl text-white">Pague com Pix para Liberar</h2>
-    <p class="text-slate-400 text-xs mt-1">Assim que o pagamento for confirmado, seu convite será liberado automaticamente nesta tela.</p>
-
-    <div class="my-5 flex justify-center">
-      <div class="bg-white p-3 rounded-2xl">
-        <img id="qr-img" src="" alt="QR Code Pix" class="w-48 h-48 object-contain" />
-      </div>
-    </div>
-
-    <div class="text-left mb-4">
-      <label class="block text-xs text-slate-400 mb-1">Pix Copia e Cola:</label>
-      <div class="flex gap-2">
-        <input type="text" id="pix-copia-cola" readonly
-          class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-300" />
-        <button onclick="copiarPix()" id="btn-copiar"
-          class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-semibold text-xs px-4 rounded-xl shrink-0">
-          Copiar
-        </button>
-      </div>
-    </div>
-
-    <div class="flex items-center justify-center gap-2 text-xs text-emerald-400 animate-pulse mt-4">
-      <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
-      Verificando confirmação automática...
-    </div>
-
-    <button onclick="voltarInicio()" class="mt-5 text-xs text-slate-400 underline hover:text-white">
-      Criar outro convite
-    </button>
-  </div>
-
-  <!-- TELA 3: CONVITE FINALIZADO / VISUALIZAÇÃO -->
-  <div id="tela-convite" class="w-full max-w-md bg-gradient-to-b from-slate-900 to-slate-950 border border-amber-500/30 rounded-3xl p-8 shadow-2xl text-center relative overflow-hidden hidden">
-    <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-400"></div>
-
-    <p id="view-tipo" class="text-xs uppercase tracking-[0.25em] text-amber-400 font-semibold mb-2">ANIVERSÁRIO</p>
-    <h1 id="view-anfitriao" class="font-serif-title text-4xl text-white mb-4">Nome do Evento</h1>
-    <p id="view-mensagem" class="text-slate-300 text-sm italic mb-6 leading-relaxed">"Mensagem especial"</p>
-
-    <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 space-y-3 mb-6 text-sm">
-      <div class="flex justify-between">
-        <span class="text-slate-400">📅 Data:</span>
-        <span id="view-data" class="font-semibold text-white">--/--/----</span>
-      </div>
-      <div class="flex justify-between">
-        <span class="text-slate-400">⏰ Horário:</span>
-        <span id="view-hora" class="font-semibold text-white">--:--</span>
-      </div>
-      <div class="pt-2 border-t border-slate-700/60 text-left">
-        <span class="text-slate-400 block text-xs mb-1">📍 Local:</span>
-        <span id="view-local" class="font-medium text-white">Endereço do evento</span>
-      </div>
-    </div>
-
-    <div class="space-y-3">
-      <a id="btn-confirmar-wpp" href="#" target="_blank"
-        class="block w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-500/20">
-        Confirmar Presença no WhatsApp
+<body>
+  <div class="announcement">Um convite especial para cada história</div>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#inicio" aria-label="Evermoment, início">
+        <span class="brand-mark">E</span>
+        <span><span class="brand-name">EVERMOMENT</span><span class="brand-sub">convites digitais</span></span>
       </a>
+      <nav class="nav-links" aria-label="Navegação principal">
+        <a href="#inicio">Início</a><a href="#catalogo">Catálogo</a><a href="#como-funciona">Como funciona</a>
+        <a class="btn btn-primary nav-cta" href="#catalogo">Escolher convite</a>
+      </nav>
+    </div>
+  </header>
 
-      <button onclick="compartilharLink()" id="btn-compartilhar"
-        class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-3 rounded-xl text-xs transition border border-slate-700">
-        🔗 Copiar Link do Convite para Enviar
-      </button>
+  <main>
+    <section class="hero" id="inicio">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">Design que celebra a vida</div>
+          <h1>Todo momento merece um convite <em>inesquecível.</em></h1>
+          <p class="hero-copy">Convites digitais interativos com confirmação de presença, mapa integrado e a sua foto. Escolha um estilo, personalize em segundos e compartilhe no WhatsApp.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#catalogo">Explorar catálogo</a>
+            <a class="btn btn-outline" href="#como-funciona">Como funciona</a>
+          </div>
+          <div class="hero-note">ELEGÂNCIA NOS DETALHES. GESTÃO DE CONVIDADOS SEM DOR DE CABEÇA.</div>
+        </div>
+        <div class="hero-art" aria-label="Exemplo de convite elegante">
+          <div class="hero-orbit">
+            <div class="hero-invite">
+              <div class="invite-small">você está convidado</div>
+              <div class="invite-script">Uma<br>celebração</div>
+              <div class="invite-rule"></div>
+              <div class="invite-detail">UM DIA • UMA HISTÓRIA<br>UM MOMENTO ESPECIAL</div>
+              <div class="invite-small" style="margin-top:17px">EVERMOMENT</div>
+            </div>
+            <div class="orbit-caption">convites interativos para todos os momentos</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="catalogo">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">Encontre seu estilo</div>
+          <h2>Catálogo de convites</h2>
+          <p>Uma coleção pensada para diferentes ocasiões. Explore os modelos e escolha aquele que combina com o seu momento.</p>
+        </div>
+        <div class="category-row" id="filters" aria-label="Filtrar por ocasião">
+          <button class="filter active" data-filter="Todos">Todos</button>
+          <button class="filter" data-filter="Aniversário">Aniversários</button>
+          <button class="filter" data-filter="Casamento">Casamento</button>
+          <button class="filter" data-filter="Chás">Chás</button>
+          <button class="filter" data-filter="Infantil">Infantil</button>
+          <button class="filter" data-filter="Celebrações">Celebrações</button>
+          <button class="filter" data-filter="Corporativo">Corporativo</button>
+        </div>
+        <div class="catalog-grid" id="catalogGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section how" id="como-funciona">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">Simples assim</div>
+          <h2>Seu convite começa aqui</h2>
+          <p>Uma experiência leve, do primeiro clique até a confirmação dos seus convidados.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">01</div><h3>Escolha o modelo</h3><p>Encontre no catálogo o estilo que mais combina com sua celebração.</p></div>
+          <div class="step"><div class="step-num">02</div><h3>Personalize com foto</h3><p>Informe os dados do evento, adicione sua foto e gere seu link exclusivo.</p></div>
+          <div class="step"><div class="step-num">03</div><h3>Receba confirmações</h3><p>Envie o link no WhatsApp e acompanhe quem vai e quantos acompanhantes.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="eyebrow" style="color:#d6c39e">A ocasião é sua. O encanto é nosso.</div>
+      <h2>Vamos criar algo especial?</h2>
+      <p>Escolha um modelo e comece a dar forma ao seu convite.</p>
+      <a class="btn" href="#catalogo">Ver modelos disponíveis</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div><div class="footer-brand">EVERMOMENT</div><div>Convites digitais para todos os momentos.</div></div>
+      <div>© <span id="year"></span> Evermoment. Todos os direitos reservados.</div>
+    </div>
+  </footer>
+
+  <!-- Modal de Criação do Convite -->
+  <div class="modal-backdrop" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <button class="modal-close" id="closeModal" aria-label="Fechar">×</button>
+      <div class="eyebrow">Vamos personalizar</div>
+      <h2 id="modalTitle">Conte sobre seu evento</h2>
+      <p class="modal-intro">Você escolheu um modelo Evermoment. Preencha os dados para gerar seu convite interativo.</p>
+      <div class="selected-preview">
+        <div class="selected-swatch" id="selectedSwatch">E</div>
+        <div><strong id="selectedName">Modelo escolhido</strong><span id="selectedCategory">Categoria</span></div>
+      </div>
+      <form id="requestForm">
+        <div class="form-grid">
+          <div class="field"><label for="eventType">Tipo de evento</label><select id="eventType" required><option value="">Selecione</option><option>Aniversário infantil</option><option>Aniversário adulto</option><option>15 anos</option><option>Casamento</option><option>Noivado / Bodas</option><option>Chá de bebê</option><option>Chá revelação</option><option>Chá de panela</option><option>Batizado</option><option>Formatura</option><option>Evento corporativo</option><option>Outro</option></select></div>
+          <div class="field"><label for="hostName">Nome / anfitrião</label><input id="hostName" placeholder="Ex: Elisandro" required></div>
+          <div class="field"><label for="eventDate">Data do evento</label><input id="eventDate" type="date" required></div>
+          <div class="field"><label for="eventTime">Horário</label><input id="eventTime" type="time" required></div>
+          <div class="field full"><label for="eventPlace">Local (Endereço completo para o mapa)</label><input id="eventPlace" placeholder="Ex: Estrada do Imigrante, 4100" required></div>
+          <div class="field full">
+            <label for="hostPhoto">Foto do anfitrião ou casal (opcional)</label>
+            <div class="photo-preview-wrap">
+              <img id="photoThumb" class="photo-thumb" alt="Prévia da foto">
+              <input id="hostPhoto" type="file" accept="image/*">
+            </div>
+          </div>
+          <div class="field full"><label for="extraInfo">Mensagem do convite</label><textarea id="extraInfo" placeholder="Ex: Churrasco na brasa, bebida gelada e resenha boa!"></textarea></div>
+          <div class="field full"><label for="customerContact">Seu WhatsApp (para receber confirmações)</label><input id="customerContact" placeholder="Ex: 54999999999" required></div>
+        </div>
+        <div class="form-actions"><button type="button" class="btn btn-outline" id="cancelModal">Voltar</button><button type="submit" class="btn btn-primary">Gerar convite e pagar Pix</button></div>
+      </form>
     </div>
   </div>
 
+  <!-- Modal Pix -->
+  <div class="modal-backdrop" id="pixModal" role="dialog" aria-modal="true" aria-labelledby="pixTitle">
+    <div class="modal" style="text-align:center">
+      <button class="modal-close" id="closePix" aria-label="Fechar">×</button>
+      <div class="eyebrow">Finalização segura</div>
+      <h2 id="pixTitle">Pagamento via Pix</h2>
+      <p class="modal-intro">Escaneie o QR Code no aplicativo do seu banco ou copie o código Pix abaixo.</p>
+      <div id="pixLoading" style="padding:25px;color:#766d60;font-size:13px">Preparando seu Pix…</div>
+      <div id="pixContent" hidden>
+        <img id="pixQr" alt="QR Code Pix para pagamento" style="display:block;width:220px;height:220px;object-fit:contain;margin:0 auto 15px;background:white;padding:8px;border:1px solid #e7dfd2">
+        <div class="field" style="text-align:left">
+          <label for="pixCode">Pix copia e cola</label>
+          <textarea id="pixCode" readonly rows="3"></textarea>
+        </div>
+        <button class="btn btn-outline" id="copyPix" style="margin-top:12px">Copiar código Pix</button>
+        <p class="notice" id="paymentStatus" aria-live="polite">Aguardando confirmação do pagamento…</p>
+      </div>
+      <div id="paidContent" hidden>
+        <div style="font-size:38px;color:#92794e;margin:18px">✓</div>
+        <h2>Pagamento confirmado!</h2>
+        <p class="modal-intro">Seu convite interativo está liberado e pronto para enviar.</p>
+        <a class="btn btn-primary" id="openInvitation" href="#">Abrir meu convite</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Convite Público + RSVP + Lista do Anfitrião -->
+  <div class="modal-backdrop" id="invitationModal" role="dialog" aria-modal="true" aria-labelledby="invitationTitle">
+    <div class="modal">
+      <button class="modal-close" id="closeInvitation" aria-label="Fechar">×</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-right:25px">
+        <div class="eyebrow" id="invitationTitle">Convite Digital</div>
+        <button class="btn btn-outline" id="shareInvitation" style="padding:7px 12px;font-size:10px">Copiar link</button>
+      </div>
+
+      <!-- Cartão do Convite -->
+      <div id="invitationView"></div>
+
+      <!-- Área de RSVP para o Convidado -->
+      <div class="rsvp-box" id="rsvpSection">
+        <h3>Confirmar Presença (RSVP)</h3>
+        <p>Preencha abaixo para o anfitrião organizar tudo certinho.</p>
+        <form id="rsvpForm">
+          <div class="form-grid">
+            <div class="field"><label for="guestName">Seu nome</label><input id="guestName" placeholder="Nome completo" required></div>
+            <div class="field">
+              <label for="guestStatus">Você vai?</label>
+              <select id="guestStatus">
+                <option value="true">Sim, eu vou!</option>
+                <option value="false">Não poderei ir</option>
+              </select>
+            </div>
+            <div class="field full" id="companionsField">
+              <label for="guestCompanions">Quantos acompanhantes vai levar? (além de você)</label>
+              <select id="guestCompanions">
+                <option value="0">Vou sozinho(a)</option>
+                <option value="1">+ 1 acompanhante</option>
+                <option value="2">+ 2 acompanhantes</option>
+                <option value="3">+ 3 acompanhantes</option>
+                <option value="4">+ 4 acompanhantes</option>
+                <option value="5">+ 5 acompanhantes</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="guestNote">Recado ou observação (opcional)</label>
+              <input id="guestNote" placeholder="Deixe uma mensagem ou avise alguma restrição...">
+            </div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <button type="submit" class="btn btn-primary" style="flex:1">Enviar confirmação</button>
+            <a id="whatsappQuickBtn" href="#" target="_blank" rel="noopener" class="btn btn-outline" hidden>Avisar no WhatsApp</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Painel do Anfitrião (Lista de Confirmados) -->
+      <div class="guest-list-toggle">
+        <button type="button" class="choose" id="toggleGuestList">Ver lista de convidados confirmados ▾</button>
+        <div id="guestListPanel" hidden>
+          <div class="guest-summary" id="guestSummary"></div>
+          <div class="guest-items" id="guestItems"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'https://euetntwsvqsvrlmfmtqz.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_Tq-8AewCx0Ny886MgtnRbQ_sHIEWbbW';
+    const SUPABASE_URL = "https://euetntwsvqsvrlmfmtqz.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_Tq-8AewCx0Ny886MgtnRbQ_sHIEWbbW";
     const VALOR_CONVITE = 0.10;
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let supabaseClient = null;
-    let intervaloVerificacao = null;
+    let conviteAtualId = null;
+    let pollingPagamento = null;
+    let convitePago = null;
+    let fotoBase64Atual = "";
 
-    function iniciarSupabase() {
-      if (!supabaseClient && window.supabase) {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      }
-      return supabaseClient;
+    const models = [
+      {id:"EV-01",name:"Jardim de Afeto",cat:"Aniversário",group:"Infantil",desc:"Delicado, floral e cheio de encanto.",theme:"theme-blush",top:"um dia especial",title:"Jardim<br>de Afeto",bottom:"ALEGRIA • CARINHO • CELEBRAÇÃO",type:"Aniversário infantil"},
+      {id:"EV-02",name:"Pequeno Explorador",cat:"Aniversário",group:"Infantil",desc:"Uma aventura alegre para os pequenos.",theme:"theme-sage",top:"prepare-se para a aventura",title:"Pequeno<br>Explorador",bottom:"VOCÊ ESTÁ CONVIDADO",type:"Aniversário infantil"},
+      {id:"EV-03",name:"Doce Celebração",cat:"Aniversário",group:"Aniversário",desc:"Moderno e sofisticado para celebrar a vida.",theme:"theme-sun",top:"celebre comigo",title:"Doce<br>Celebração",bottom:"UM NOVO CICLO COMEÇA",type:"Aniversário adulto"},
+      {id:"EV-04",name:"Noite Dourada",cat:"Aniversário",group:"Aniversário",desc:"Elegância e brilho na medida certa.",theme:"theme-black",top:"uma noite para lembrar",title:"Noite<br>Dourada",bottom:"SAVE THE DATE",type:"Aniversário adulto"},
+      {id:"EV-05",name:"Eterno Sim",cat:"Casamento",group:"Celebrações",desc:"Romântico, minimalista e atemporal.",theme:"theme-night",top:"com alegria no coração",title:"Eterno<br>Sim",bottom:"NOSSO CASAMENTO",type:"Casamento"},
+      {id:"EV-06",name:"La Vie en Rose",cat:"Casamento",group:"Celebrações",desc:"Romance em tons suaves e delicados.",theme:"theme-rose",top:"juntos para sempre",title:"La Vie<br>en Rose",bottom:"UMA HISTÓRIA DE AMOR",type:"Casamento"},
+      {id:"EV-07",name:"Bem-vinda, Vida",cat:"Chás",group:"Infantil",desc:"Uma chegada esperada com muito carinho.",theme:"theme-blush",top:"com amor, esperamos você",title:"Bem-vinda<br>Vida",bottom:"CHÁ DE BEBÊ",type:"Chá de bebê"},
+      {id:"EV-08",name:"Surpresa Revelada",cat:"Chás",group:"Infantil",desc:"Um convite divertido para revelar uma alegria.",theme:"theme-blue",top:"uma surpresa está chegando",title:"Menino<br>ou Menina?",bottom:"CHÁ REVELAÇÃO",type:"Chá revelação"},
+      {id:"EV-09",name:"Flores & Afeto",cat:"Chás",group:"Celebrações",desc:"Leveza floral para um encontro especial.",theme:"theme-lilac",top:"um encontro especial",title:"Flores<br>& Afeto",bottom:"CHÁ DE PANELA",type:"Chá de panela"},
+      {id:"EV-10",name:"Novo Capítulo",cat:"Celebrações",group:"Celebrações",desc:"Uma conquista merece ser celebrada.",theme:"theme-sage",top:"uma conquista",title:"Novo<br>Capítulo",bottom:"FORMATURA",type:"Formatura"},
+      {id:"EV-11",name:"Essência",cat:"Celebrações",group:"Celebrações",desc:"Clássico e sereno para cerimônias especiais.",theme:"theme-sun",top:"um momento de fé",title:"Essência",bottom:"BATIZADO • CELEBRAÇÃO",type:"Batizado"},
+      {id:"EV-12",name:"Encontro & Conexão",cat:"Corporativo",group:"Corporativo",desc:"Uma apresentação elegante para sua marca.",theme:"theme-terracotta",top:"você é nosso convidado",title:"Encontro<br>& Conexão",bottom:"EVENTO ESPECIAL",type:"Evento corporativo"}
+    ];
+
+    let selectedModel = null;
+    const grid = document.getElementById("catalogGrid");
+    const modal = document.getElementById("orderModal");
+
+    function renderCards(filter="Todos") {
+      const list = filter==="Todos" ? models : models.filter(m => m.cat===filter || m.group===filter);
+      grid.innerHTML = list.length ? list.map(m => `
+        <article class="product-card">
+          <div class="card-visual ${m.theme}">
+            <div class="mini-invite">
+              <div class="mini-top">${m.top}</div>
+              <div class="mini-title">${m.title}</div>
+              <div class="mini-line"></div>
+              <div class="mini-bottom">${m.bottom}</div>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-meta">${m.cat}</div>
+            <h3>${m.name}</h3>
+            <p>${m.desc}</p>
+            <div class="card-bottom"><span class="model-code">${m.id}</span><button class="choose" data-model="${m.id}">Escolher modelo ↗</button></div>
+          </div>
+        </article>`).join("") : '<div class="empty">Nenhum modelo nesta categoria por enquanto.</div>';
+      grid.querySelectorAll("[data-model]").forEach(btn => btn.addEventListener("click", () => openOrder(btn.dataset.model)));
     }
 
-    function mostrarTela(idTela) {
-      document.getElementById('tela-criacao').classList.add('hidden');
-      document.getElementById('tela-pix').classList.add('hidden');
-      document.getElementById('tela-convite').classList.add('hidden');
-      document.getElementById(idTela).classList.remove('hidden');
-    }
-
-    function voltarInicio() {
-      if (intervaloVerificacao) clearInterval(intervaloVerificacao);
-      window.history.pushState({}, '', window.location.pathname);
-      mostrarTela('tela-criacao');
-    }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      const params = new URLSearchParams(window.location.search);
-      const conviteId = params.get('id');
-
-      if (conviteId) {
-        await carregarConvite(conviteId);
-      } else {
-        mostrarTela('tela-criacao');
-      }
+    document.getElementById("filters").addEventListener("click", e => {
+      const btn=e.target.closest("[data-filter]"); if(!btn) return;
+      document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("active",b===btn));
+      renderCards(btn.dataset.filter);
     });
 
-    document.getElementById('form-convite').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('btn-gerar');
-      btn.disabled = true;
-      btn.textContent = 'Gerando cobrança Pix...';
-
-      try {
-        const db = iniciarSupabase();
-        if (!db) throw new Error('Falha ao conectar com o banco de dados. Recarregue a página.');
-
-        const dadosConvite = {
-          tipo: document.getElementById('tipo').value,
-          anfitriao: document.getElementById('anfitriao').value,
-          data: document.getElementById('data').value,
-          hora: document.getElementById('hora').value,
-          local: document.getElementById('local').value,
-          mensagem: document.getElementById('mensagem').value || 'Sua presença tornará este dia ainda mais especial!'
+    // Compressão leve da foto para salvar direto no JSON do Supabase sem estourar limite
+    document.getElementById("hostPhoto").addEventListener("change", e => {
+      const file = e.target.files?.[0];
+      if (!file) { fotoBase64Atual = ""; document.getElementById("photoThumb").style.display = "none"; return; }
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const size = 280;
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+          const minSide = Math.min(img.width, img.height);
+          const sx = (img.width - minSide) / 2;
+          const sy = (img.height - minSide) / 2;
+          ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+          fotoBase64Atual = canvas.toDataURL("image/jpeg", 0.78);
+          const thumb = document.getElementById("photoThumb");
+          thumb.src = fotoBase64Atual;
+          thumb.style.display = "block";
         };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
 
-        const whatsappCliente = document.getElementById('whatsapp').value.replace(/\D/g, '');
+    function openOrder(id) {
+      selectedModel=models.find(m=>m.id===id);
+      document.getElementById("selectedName").textContent=selectedModel.name;
+      document.getElementById("selectedCategory").textContent=`${selectedModel.cat} · ${selectedModel.id}`;
+      document.getElementById("selectedSwatch").textContent=selectedModel.name.split(" ").map(x=>x[0]).slice(0,2).join("");
+      const type=document.getElementById("eventType");
+      const option=[...type.options].find(o=>o.text===selectedModel.type);
+      if(option) type.value=option.value;
+      modal.classList.add("open"); document.body.style.overflow="hidden";
+      document.getElementById("hostName").focus();
+    }
 
-        const { data: registro, error } = await db
-          .from('Convites')
-          .insert([{
-            dados_convite: dadosConvite,
-            whatsapp_cliente: whatsappCliente,
-            status: 'pendente',
-            Pago: false
-          }])
-          .select()
+    function closeOrder(){modal.classList.remove("open");document.body.style.overflow=""}
+    document.getElementById("closeModal").addEventListener("click",closeOrder);
+    document.getElementById("cancelModal").addEventListener("click",closeOrder);
+    modal.addEventListener("click",e=>{if(e.target===modal)closeOrder()});
+    document.getElementById("pixModal").addEventListener("click",e=>{if(e.target.id==="pixModal")document.getElementById("closePix").click()});
+    document.getElementById("invitationModal").addEventListener("click",e=>{if(e.target.id==="invitationModal")document.getElementById("closeInvitation").click()});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape")closeOrder()});
+
+    document.getElementById("requestForm").addEventListener("submit", async e=>{
+      e.preventDefault();
+      const submitButton=e.submitter;
+      const originalText=submitButton.textContent;
+      submitButton.disabled=true;
+      submitButton.textContent="Preparando Pix…";
+      const whatsapp = document.getElementById("customerContact").value;
+      const dados={
+        modelo:selectedModel?.name||"Modelo Evermoment",
+        codigo_modelo:selectedModel?.id||"",
+        tema:selectedModel?.theme||"theme-blush",
+        topo:selectedModel?.top||"você está convidado",
+        tipo_evento:document.getElementById("eventType").value,
+        anfitriao:document.getElementById("hostName").value,
+        data:document.getElementById("eventDate").value,
+        horario:document.getElementById("eventTime").value,
+        local:document.getElementById("eventPlace").value,
+        mensagem:document.getElementById("extraInfo").value,
+        foto:fotoBase64Atual,
+        whatsapp:whatsapp
+      };
+      try {
+        const {data:registro,error:insertError}=await supabase
+          .from("Convites")
+          .insert([{dados_convite:dados,whatsapp_cliente:whatsapp,status:"pendente",Pago:false}])
+          .select("id")
           .single();
-
-        if (error) throw error;
-
-        const resPix = await fetch('/api/criar-pix', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            conviteId: registro.id,
-            valor: VALOR_CONVITE
-          })
-        });
-
-        const pixData = await resPix.json();
-        if (!resPix.ok) throw new Error(pixData.error || 'Erro ao criar Pix');
-
-        window.history.pushState({}, '', `?id=${registro.id}`);
-        exibirTelaPix(registro.id, pixData);
-
-      } catch (err) {
-        alert('Erro: ' + err.message);
-        btn.disabled = false;
-        btn.textContent = 'Gerar Convite e Ir para Pix (R$ 0,10)';
+        if(insertError) throw insertError;
+        conviteAtualId=registro.id;
+        closeOrder();
+        await iniciarPagamentoPix(conviteAtualId);
+      } catch(error) {
+        console.error("Erro ao criar convite:",error);
+        showToast("Não foi possível iniciar. Verifique sua conexão e tente novamente.");
+      } finally {
+        submitButton.disabled=false;
+        submitButton.textContent=originalText;
       }
     });
 
-    function exibirTelaPix(conviteId, pixData) {
-      mostrarTela('tela-pix');
-      document.getElementById('qr-img').src = `data:image/png;base64,${pixData.qr_code_base64}`;
-      document.getElementById('pix-copia-cola').value = pixData.qr_code;
-
-      const db = iniciarSupabase();
-      intervaloVerificacao = setInterval(async () => {
-        const { data } = await db
-          .from('Convites')
-          .select('*')
-          .eq('id', conviteId)
-          .single();
-
-        if (data && data.Pago === true) {
-          clearInterval(intervaloVerificacao);
-          renderizarConvite(data);
+    async function iniciarPagamentoPix(conviteId) {
+      const pixModal=document.getElementById("pixModal");
+      pixModal.classList.add("open");
+      document.body.style.overflow="hidden";
+      document.getElementById("pixLoading").hidden=false;
+      document.getElementById("pixContent").hidden=true;
+      document.getElementById("paidContent").hidden=true;
+      document.getElementById("pixLoading").textContent="Preparando seu Pix…";
+      try {
+        const response=await fetch("/api/criar-pix",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({conviteId:conviteId,valor:VALOR_CONVITE})
+        });
+        const result=await response.json();
+        if(!response.ok) throw new Error(result.error||result.message||"Falha ao gerar Pix.");
+        const qr=result.qr_code_base64;
+        const qrCode=result.qr_code;
+        if(qr) {
+          document.getElementById("pixQr").src=qr.startsWith("data:")?qr:`data:image/png;base64,${qr}`;
+        } else {
+          document.getElementById("pixQr").removeAttribute("src");
+          document.getElementById("pixQr").alt="QR Code indisponível; utilize o código Pix copia e cola.";
         }
-      }, 4000);
+        document.getElementById("pixCode").value=qrCode||"";
+        document.getElementById("pixLoading").hidden=true;
+        document.getElementById("pixContent").hidden=false;
+        document.getElementById("paymentStatus").textContent="Aguardando confirmação automática do pagamento…";
+        if(pollingPagamento) clearInterval(pollingPagamento);
+        pollingPagamento=setInterval(()=>verificarPagamento(conviteId),4000);
+      } catch(error) {
+        console.error("Erro Pix:",error);
+        document.getElementById("pixLoading").textContent="Não foi possível gerar o Pix. Feche esta janela e tente novamente.";
+      }
     }
 
-    async function carregarConvite(conviteId) {
+    async function verificarPagamento(conviteId) {
       try {
-        const db = iniciarSupabase();
-        const { data, error } = await db
-          .from('Convites')
-          .select('*')
-          .eq('id', conviteId)
+        const {data,error}=await supabase.from("Convites")
+          .select("id,dados_convite,whatsapp_cliente,Pago,status")
+          .eq("id",conviteId)
           .single();
+        if(error) throw error;
+        if(data && (data.Pago===true || data.status==="pago")) {
+          clearInterval(pollingPagamento);
+          pollingPagamento=null;
+          convitePago=data;
+          document.getElementById("pixContent").hidden=true;
+          document.getElementById("paidContent").hidden=false;
+          document.getElementById("openInvitation").href=`?id=${encodeURIComponent(conviteId)}`;
+          document.getElementById("paymentStatus").textContent="Pagamento confirmado.";
+        }
+      } catch(error) {
+        console.warn("Ainda não foi possível consultar o pagamento:",error);
+      }
+    }
 
-        if (error || !data) {
-          voltarInicio();
+    document.getElementById("copyPix").addEventListener("click",async()=>{
+      const value=document.getElementById("pixCode").value;
+      if(!value){showToast("Código Pix ainda não disponível.");return;}
+      try { await navigator.clipboard.writeText(value); showToast("Código Pix copiado!"); }
+      catch(e) { document.getElementById("pixCode").select(); showToast("Selecione e copie o código Pix."); }
+    });
+
+    document.getElementById("closePix").addEventListener("click",()=>{
+      if(pollingPagamento){clearInterval(pollingPagamento);pollingPagamento=null;}
+      document.getElementById("pixModal").classList.remove("open");
+      document.body.style.overflow="";
+    });
+
+    async function carregarConvitePorId(id) {
+      try {
+        const {data,error}=await supabase.from("Convites")
+          .select("id,dados_convite,whatsapp_cliente,Pago,status")
+          .eq("id",id).single();
+        if(error || !data || !(data.Pago===true || data.status==="pago")) {
+          showToast("Este convite ainda não está disponível.");
           return;
         }
-
-        if (data.Pago === true) {
-          renderizarConvite(data);
-        } else {
-          const resPix = await fetch('/api/criar-pix', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              conviteId: data.id,
-              valor: VALOR_CONVITE
-            })
-          });
-          const pixData = await resPix.json();
-          if (!resPix.ok) throw new Error(pixData.error || 'Erro ao gerar Pix');
-          exibirTelaPix(data.id, pixData);
-        }
-      } catch (err) {
-        alert('Erro ao carregar convite: ' + err.message);
-        voltarInicio();
+        convitePago=data;
+        renderizarConvitePublico(data);
+        carregarConfirmacoes(id);
+      } catch(error) {
+        console.error(error);
+        showToast("Não foi possível carregar este convite.");
       }
     }
 
-    function renderizarConvite(registro) {
-      const info = registro.dados_convite;
-      const dataFormatada = info.data ? info.data.split('-').reverse().join('/') : '';
-
-      document.getElementById('view-tipo').textContent = info.tipo;
-      document.getElementById('view-anfitriao').textContent = info.anfitriao;
-      document.getElementById('view-mensagem').textContent = `"${info.mensagem}"`;
-      document.getElementById('view-data').textContent = dataFormatada;
-      document.getElementById('view-hora').textContent = info.hora;
-      document.getElementById('view-local').textContent = info.local;
-
-      const textoWpp = encodeURIComponent(`Olá! Estou confirmando minha presença no evento *${info.anfitriao}* (${info.tipo}) no dia ${dataFormatada}!`);
-      document.getElementById('btn-confirmar-wpp').href = `https://wa.me/55${registro.whatsapp_cliente}?text=${textoWpp}`;
-
-      mostrarTela('tela-convite');
+    function formatarDataBr(isoDate) {
+      if (!isoDate || !isoDate.includes("-")) return isoDate || "";
+      const [y, m, d] = isoDate.split("-");
+      return `${d}/${m}/${y}`;
     }
 
-    function copiarPix() {
-      const input = document.getElementById('pix-copia-cola');
-      input.select();
-      navigator.clipboard.writeText(input.value);
-      const btn = document.getElementById('btn-copiar');
-      btn.textContent = 'Copiado!';
-      setTimeout(() => btn.textContent = 'Copiar', 2500);
+    function gerarLinkGoogleCalendar(d) {
+      const titulo = encodeURIComponent(`${d.tipo_evento || "Evento"} — ${d.anfitriao || ""}`);
+      const local = encodeURIComponent(d.local || "");
+      const detalhes = encodeURIComponent(d.mensagem || "Convite digital Evermoment");
+      if (!d.data) return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&location=${local}&details=${detalhes}`;
+      const dataLimpa = d.data.replace(/-/g, "");
+      const horaLimpa = (d.horario || "19:00").replace(":", "") + "00";
+      const inicio = `${dataLimpa}T${horaLimpa}`;
+      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${titulo}&dates=${inicio}/${inicio}&location=${local}&details=${detalhes}`;
     }
 
-    function compartilharLink() {
-      navigator.clipboard.writeText(window.location.href);
-      const btn = document.getElementById('btn-compartilhar');
-      btn.textContent = '✅ Link Copiado! Agora cole no WhatsApp';
-      setTimeout(() => btn.textContent = '🔗 Copiar Link do Convite para Enviar', 3000);
+    function renderizarConvitePublico(registro) {
+      const d = registro.dados_convite || {};
+      const tema = d.tema || "theme-blush";
+      const dataFormatada = formatarDataBr(d.data);
+      const mapsUrl = d.local ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.local)}` : "";
+      const calendarUrl = gerarLinkGoogleCalendar(d);
+
+      document.getElementById("invitationTitle").textContent = d.modelo || "Convite Evermoment";
+      document.getElementById("invitationView").innerHTML = `
+        <div class="invite-card ${escapeHtml(tema)}">
+          ${d.foto ? `<img src="${d.foto}" alt="Foto de ${escapeHtml(d.anfitriao)}" class="host-photo">` : ""}
+          <div style="font:10px var(--sans);letter-spacing:.22em;text-transform:uppercase;opacity:.85">${escapeHtml(d.topo || "Você está convidado")}</div>
+          <div style="font:italic 36px/1.15 var(--serif);margin:14px 0">${escapeHtml(d.anfitriao || "Uma celebração especial")}</div>
+          <div style="width:45px;height:1px;background:currentColor;margin:12px auto;opacity:.5"></div>
+          <div style="font:15px var(--serif);letter-spacing:.08em;text-transform:uppercase">${escapeHtml(d.tipo_evento || "Celebração")}</div>
+          <p style="font-size:13px;opacity:.9;margin:16px auto 0;max-width:380px">${escapeHtml(d.mensagem || "Será uma alegria celebrar este momento com você.")}</p>
+          <div style="margin-top:20px;font-size:13px;font-weight:600">
+            ${dataFormatada ? `📅 ${escapeHtml(dataFormatada)}` : ""} ${d.horario ? `às ${escapeHtml(d.horario)}` : ""}
+          </div>
+          ${d.local ? `<div style="font-size:12px;margin-top:6px;opacity:.9">📍 ${escapeHtml(d.local)}</div>` : ""}
+
+          <div class="invite-actions-bar">
+            ${mapsUrl ? `<a href="${mapsUrl}" target="_blank" rel="noopener" class="btn btn-primary" style="padding:10px 14px;font-size:10px">📍 Abrir no Maps</a>` : ""}
+            <a href="${calendarUrl}" target="_blank" rel="noopener" class="btn btn-outline" style="padding:10px 14px;font-size:10px;background:rgba(255,255,255,.85)">🗓️ Salvar na Agenda</a>
+          </div>
+          <div style="font:9px var(--sans);letter-spacing:.25em;opacity:.65;margin-top:22px">EVERMOMENT</div>
+        </div>`;
+
+      // Configura botão opcional de envio rápido para o WhatsApp do anfitrião
+      const whatsNum = String(d.whatsapp || registro.whatsapp_cliente || "").replace(/\D/g, "");
+      const whatsBtn = document.getElementById("whatsappQuickBtn");
+      if (whatsNum.length >= 10) {
+        const numComDDI = whatsNum.startsWith("55") ? whatsNum : `55${whatsNum}`;
+        const texto = encodeURIComponent(`Olá ${d.anfitriao || ""}! Acabei de confirmar minha presença no seu convite (${d.tipo_evento || "evento"}).`);
+        whatsBtn.href = `https://wa.me/${numComDDI}?text=${texto}`;
+        whatsBtn.hidden = false;
+      } else {
+        whatsBtn.hidden = true;
+      }
+
+      document.getElementById("invitationModal").classList.add("open");
+      document.body.style.overflow = "hidden";
     }
+
+    // Esconde campo de acompanhantes se o convidado marcar "Não poderei ir"
+    document.getElementById("guestStatus").addEventListener("change", e => {
+      document.getElementById("companionsField").hidden = e.target.value === "false";
+    });
+
+    // Salva confirmação de presença no Supabase
+    document.getElementById("rsvpForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      if (!convitePago?.id) return;
+      const btn = e.submitter;
+      btn.disabled = true;
+      btn.textContent = "Enviando…";
+
+      const vai = document.getElementById("guestStatus").value === "true";
+      const payload = {
+        convite_id: convitePago.id,
+        nome_convidado: document.getElementById("guestName").value.trim(),
+        vai_comparecer: vai,
+        acompanhantes: vai ? Number(document.getElementById("guestCompanions").value || 0) : 0,
+        observacao: document.getElementById("guestNote").value.trim()
+      };
+
+      try {
+        const { error } = await supabase.from("Confirmacoes").insert([payload]);
+        if (error) throw error;
+        showToast("Presença confirmada com sucesso!");
+        e.target.reset();
+        document.getElementById("companionsField").hidden = false;
+        await carregarConfirmacoes(convitePago.id);
+      } catch (err) {
+        console.error("Erro ao salvar RSVP:", err);
+        showToast("Não foi possível registrar agora. Tente novamente.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Enviar confirmação";
+      }
+    });
+
+    // Carrega e exibe lista de confirmados para o anfitrião
+    async function carregarConfirmacoes(conviteId) {
+      const { data, error } = await supabase
+        .from("Confirmacoes")
+        .select("*")
+        .eq("convite_id", conviteId)
+        .order("created_at", { ascending: false });
+
+      if (error || !data) return;
+
+      const confirmados = data.filter(x => x.vai_comparecer);
+      const totalPessoas = confirmados.reduce((acc, item) => acc + 1 + (item.acompanhantes || 0), 0);
+      const naoVao = data.filter(x => !x.vai_comparecer).length;
+
+      document.getElementById("guestSummary").innerHTML = `
+        <span class="guest-pill">✅ ${totalPessoas} pessoa(s) confirmada(s)</span>
+        <span class="guest-pill">❌ ${naoVao} ausência(s)</span>
+      `;
+
+      document.getElementById("guestItems").innerHTML = data.length
+        ? data.map(item => `
+            <div class="guest-item">
+              <strong>${escapeHtml(item.nome_convidado)} — ${item.vai_comparecer ? `Vai (+${item.acompanhantes} acomp.)` : "Não vai"}</strong>
+              ${item.observacao ? `<small>"${escapeHtml(item.observacao)}"</small>` : ""}
+            </div>
+          `).join("")
+        : `<div class="guest-item"><small>Nenhuma confirmação registrada ainda.</small></div>`;
+    }
+
+    document.getElementById("toggleGuestList").addEventListener("click", () => {
+      const panel = document.getElementById("guestListPanel");
+      panel.hidden = !panel.hidden;
+    });
+
+    function escapeHtml(value) {
+      return String(value??"").replace(/[&<>"']/g, ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+    }
+
+    document.getElementById("closeInvitation").addEventListener("click",()=>{
+      document.getElementById("invitationModal").classList.remove("open");
+      document.body.style.overflow="";
+    });
+
+    document.getElementById("shareInvitation").addEventListener("click",async()=>{
+      try { await navigator.clipboard.writeText(location.href); showToast("Link do convite copiado!"); }
+      catch(e) { showToast("Copie o endereço exibido no navegador."); }
+    });
+
+    const params=new URLSearchParams(location.search);
+    if(params.has("id")) carregarConvitePorId(params.get("id"));
+
+    function showToast(message){const t=document.getElementById("toast");t.textContent=message;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),3500)}
+    document.getElementById("year").textContent=new Date().getFullYear();
+    renderCards();
+    window.addEventListener("beforeunload",()=>{if(pollingPagamento)clearInterval(pollingPagamento)});
   </script>
 </body>
 </html>
