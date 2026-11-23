@@ -63,9 +63,18 @@
     .section-head{text-align:center;max-width:650px;margin:0 auto 36px}
     .section-head h2{font:500 clamp(32px,4vw,46px) var(--serif);margin:12px 0}
     .section-head p{color:var(--muted);font-size:14px}
+
+    /* Barra de Subpáginas / Categorias */
+    .subpage-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 18px;background:var(--paper-2);border:1px solid var(--line);margin-bottom:26px}
+    .breadcrumb{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+    .breadcrumb strong{color:var(--gold-dark)}
+    .back-home-btn{background:transparent;border:1px solid var(--gold);color:var(--dark);padding:8px 14px;border-radius:3px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+    .back-home-btn:hover{background:#eee5d6}
+
     .category-row{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:0 auto 32px}
-    .filter{border:1px solid var(--line);background:transparent;color:#655e54;padding:9px 15px;border-radius:30px;font-size:11px;transition:.2s}
+    .filter{border:1px solid var(--line);background:transparent;color:#655e54;padding:9px 15px;border-radius:30px;font-size:11px;transition:.2s;display:inline-block}
     .filter.active,.filter:hover{background:var(--dark);border-color:var(--dark);color:white}
+
     .catalog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:25px}
     .product-card{background:var(--paper-2);border:1px solid var(--line);transition:.25s;overflow:hidden}
     .product-card:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
@@ -153,6 +162,17 @@
     .photo-preview-wrap{display:flex;align-items:center;gap:12px;margin-top:4px}
     .photo-thumb{width:46px;height:46px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);display:none}
 
+    /* Modo Subpágina Ativa */
+    body.subpage-mode .hero,
+    body.subpage-mode .how,
+    body.subpage-mode .cta {
+      display: none;
+    }
+    body.subpage-mode .section {
+      padding-top: 34px;
+      min-height: 75vh;
+    }
+
     @media(max-width:800px){.hero-grid{grid-template-columns:1fr;gap:25px}.hero{padding-top:55px}.hero-art{min-height:320px}.hero-orbit{width:310px}.catalog-grid{grid-template-columns:repeat(2,1fr)}.nav-links{gap:15px}.nav-links a:not(.nav-cta){display:none}}
     @media(max-width:540px){.wrap{width:min(100% - 28px,1160px)}.nav{height:66px}.brand-name{font-size:19px}.nav-cta{padding:10px 12px;font-size:9px}.hero{padding:48px 0 38px}.hero-art{min-height:285px}.hero-orbit{width:270px}.hero-invite{width:190px;min-height:255px}.invite-script{font-size:32px}.section{padding:56px 0}.catalog-grid{grid-template-columns:1fr;gap:17px}.card-visual{height:285px}.steps{grid-template-columns:1fr;gap:25px}.footer-inner{flex-direction:column;text-align:center}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.modal{padding:25px 19px}.category-row{gap:7px}.filter{padding:8px 12px}}
   </style>
@@ -161,13 +181,15 @@
   <div class="announcement">Um convite especial para cada história</div>
   <header>
     <div class="wrap nav">
-      <a class="brand" href="#inicio" aria-label="Evermoment, início">
+      <a class="brand" href="#inicio" id="brandHome" aria-label="Evermoment, início">
         <span class="brand-mark">E</span>
         <span><span class="brand-name">EVERMOMENT</span><span class="brand-sub">convites digitais</span></span>
       </a>
       <nav class="nav-links" aria-label="Navegação principal">
-        <a href="#inicio">Início</a><a href="#catalogo">Catálogo</a><a href="#como-funciona">Como funciona</a>
-        <a class="btn btn-primary nav-cta" href="#catalogo">Escolher convite</a>
+        <a href="#inicio" id="navHome">Início</a>
+        <a href="#todos" id="navCatalog">Catálogo</a>
+        <a href="#como-funciona" id="navHow">Como funciona</a>
+        <a class="btn btn-primary nav-cta" href="#todos">Escolher convite</a>
       </nav>
     </div>
   </header>
@@ -180,7 +202,7 @@
           <h1>Todo momento merece um convite <em>inesquecível.</em></h1>
           <p class="hero-copy">Convites digitais interativos com confirmação de presença, mapa integrado e a sua foto. Escolha um estilo, personalize em segundos e compartilhe no WhatsApp.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#catalogo">Explorar catálogo</a>
+            <a class="btn btn-primary" href="#todos">Explorar catálogo</a>
             <a class="btn btn-outline" href="#como-funciona">Como funciona</a>
           </div>
           <div class="hero-note">ELEGÂNCIA NOS DETALHES. GESTÃO DE CONVIDADOS SEM DOR DE CABEÇA.</div>
@@ -202,20 +224,29 @@
 
     <section class="section" id="catalogo">
       <div class="wrap">
+        <!-- Barra de Subpágina (exibida ao navegar em uma categoria específica) -->
+        <div class="subpage-bar" id="subpageBar" hidden>
+          <div class="breadcrumb">Início / Catálogo / <strong id="breadcrumbCategory">Todos</strong></div>
+          <a href="#inicio" class="back-home-btn" id="backHomeBtn">← Voltar para a página inicial</a>
+        </div>
+
         <div class="section-head">
-          <div class="eyebrow">Encontre seu estilo</div>
-          <h2>Catálogo de convites</h2>
-          <p>Uma coleção pensada para diferentes ocasiões. Explore os modelos e escolha aquele que combina com o seu momento.</p>
+          <div class="eyebrow" id="catalogEyebrow">Encontre seu estilo</div>
+          <h2 id="catalogTitle">Catálogo de convites</h2>
+          <p id="catalogDesc">Uma coleção pensada para diferentes ocasiões. Explore os modelos e escolha aquele que combina com o seu momento.</p>
         </div>
-        <div class="category-row" id="filters" aria-label="Filtrar por ocasião">
-          <button type="button" class="filter active" data-filter="Todos">Todos</button>
-          <button type="button" class="filter" data-filter="Aniversário">Aniversários</button>
-          <button type="button" class="filter" data-filter="Casamento">Casamento</button>
-          <button type="button" class="filter" data-filter="Chás">Chás</button>
-          <button type="button" class="filter" data-filter="Infantil">Infantil</button>
-          <button type="button" class="filter" data-filter="Celebrações">Celebrações</button>
-          <button type="button" class="filter" data-filter="Corporativo">Corporativo</button>
+
+        <!-- Links de Subpáginas por Categoria -->
+        <div class="category-row" id="filters" aria-label="Subpáginas por ocasião">
+          <a class="filter active" href="#todos" data-route="todos">Todos</a>
+          <a class="filter" href="#aniversarios" data-route="aniversarios">Aniversários</a>
+          <a class="filter" href="#casamento" data-route="casamento">Casamento</a>
+          <a class="filter" href="#chas" data-route="chas">Chás</a>
+          <a class="filter" href="#infantil" data-route="infantil">Infantil</a>
+          <a class="filter" href="#celebracoes" data-route="celebracoes">Celebrações</a>
+          <a class="filter" href="#corporativo" data-route="corporativo">Corporativo</a>
         </div>
+
         <div class="catalog-grid" id="catalogGrid" aria-live="polite"></div>
       </div>
     </section>
@@ -239,7 +270,7 @@
       <div class="eyebrow" style="color:#d6c39e">A ocasião é sua. O encanto é nosso.</div>
       <h2>Vamos criar algo especial?</h2>
       <p>Escolha um modelo e comece a dar forma ao seu convite.</p>
-      <a class="btn" href="#catalogo">Ver modelos disponíveis</a>
+      <a class="btn" href="#todos">Ver modelos disponíveis</a>
     </section>
   </main>
 
@@ -251,18 +282,4 @@
   </footer>
 
   <!-- Modal de Criação do Convite -->
-  <div class="modal-backdrop" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal">
-      <button type="button" class="modal-close" id="closeModal" aria-label="Fechar">×</button>
-      <div class="eyebrow">Vamos personalizar</div>
-      <h2 id="modalTitle">Conte sobre seu evento</h2>
-      <p class="modal-intro">Você escolheu um modelo Evermoment. Preencha os dados para gerar seu convite interativo.</p>
-      <div class="selected-preview">
-        <div class="selected-swatch" id="selectedSwatch">E</div>
-        <div><strong id="selectedName">Modelo escolhido</strong><span id="selectedCategory">Categoria</span></div>
-      </div>
-      <form id="requestForm">
-        <div class="form-grid">
-          <div class="field"><label for="eventType">Tipo de evento</label><select id="eventType" required><option value="">Selecione</option><option>Aniversário infantil</option><option>Aniversário adulto</option><option>15 anos</option><option>Casamento</option><option>Noivado / Bodas</option><option>Chá de bebê</option><option>Chá revelação</option><option>Chá de panela</option><option>Batizado</option><option>Formatura</option><option>Evento corporativo</option><option>Outro</option></select></div>
-          <div class="field"><label for="hostName">Nome / anfitrião</label><input id="hostName" placeholder="Ex: Elisandro" required></div>
-          <div class="field"><label for="eventDate">Data d
+  <div class="modal-backdrop" id="orderModal" role="dialog" aria-modal="true"
