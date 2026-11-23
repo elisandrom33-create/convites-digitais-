@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         'X-Idempotency-Key': String(conviteId)
       },
       body: JSON.stringify({
-        transaction_amount: Number(valor || 40),
+        transaction_amount: Number(valor || 0,10),
         description: `Convite Digital #${conviteId}`,
         payment_method_id: 'pix',
         external_reference: String(conviteId),
